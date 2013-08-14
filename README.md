@@ -10,11 +10,12 @@ LICENSE
 
 COMPILE TOOLS
 ===============
-* 
+* IBM VAC++ 3.0
 
 AUTHORS
 ===============
 * Bob Hood
+* Detlef Graef
 
 LINKS
 ===============
