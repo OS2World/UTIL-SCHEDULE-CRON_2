@@ -1,0 +1,522 @@
+
+
+
+
+
+
+
+                                                                      CRON/2
+
+                                                         Client/server-based
+                                                     timed program execution
+                                                                      
+
+                                                                version 1.41
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                       A program by Bob Hood
+                                            Copyright (C) 1993-1994 Bob Hood
+
+
+
+     CRON/2 is a copyrighted program.  You may use CRON/2 in any environment
+     for any purpose.  You may not sell CRON/2, nor charge a fee for CRON/2
+     except where a nomimal charge would be applicable for electronically
+     transferring CRON/2 any selected medium.
+
+     Program and documentation Copyright (C) 1993-1994 Bob Hood.
+     All Rights Reserved.
+
+
+     OS/2 and products marked (TM) are trademarks or registered trademarks
+     of IBM Corporation
+
+
+CRON/2
+---------------------------------------------------------------------------
+
+     CRON/2 is another in a series of UNIX cron clones to the OS/2 platform.
+
+     I didn't write CRON/2 to compete with any of the others; instead, I
+     wrote CRON/2 to give me more control over my applications than the
+     others.  I missed the ability to specify the launching of applications
+     to the degree afforded me by the UNIX version.  Most clones for OS/2
+     I've seen (and I'm sure I've not seen them all) were not as closely
+     modelled after the UNIX version as CRON/2.  However, you can judge
+     for yourself.
+
+     CRON/2 adds a new (and perhaps worthless) twist in that it can be used
+     for networking timed launches between systems.  Utilizing TCP/IP, CRON/2
+     can act as a client, a server, or both in the same application by
+     allowing CRON/2 to launch applications on remote systems at a time of
+     its choosing.  This allows a central machine to control the running
+     of processes based upon factors that it alone is aware of (such as a
+     central file server initiating individual machine backups when network
+     load is minimal).
+
+     CRON/2 provides both network and non-network versions in the same
+     distribution.  The non-network version, denoted by the lack of an "N"
+     on the executable name (i.e., CRON2.EXE), is provided for those
+     individuals without IBM's TCP/IP product installed.
+
+     CRON/2 also offers the convenience of a second UNIX utility:  the
+     UNIX at command.  The at command not only provides a quick method of
+     launching a process once, it also provides a command-line interface
+     to CRON/2 for other applications.
+
+     If you like CRON/2, that's fantastic!  It's my first OS/2 application.
+     If you don't like CRON/2, that's fantastic too!  Go find (or write)
+     another that more closely suits your needs.
+     
+     I wrote CRON/2 to suit mine.
+
+     WHO CAN USE CRON/2
+     ----------------------------------------------------------------------
+
+     Anybody.  Anywhere.  Anytime.
+
+     This is a FreeWare product.  The first of many of my contributions
+     back to IBM for making its development environment easily accessable
+     to developers.
+
+     Thanks, Big Blue.  You still have a lot of suprises left for us...
+
+     THE FUTURE
+     ----------------------------------------------------------------------
+
+     I plan to develop a PM version of CRON/2 that supports drag-and-drop
+     and utilizes some container classes.  Other additions will likely only
+     be user-interface-related:  I like CRON/2's mechanics of specifying and
+     launching applications just the way it is.
+
+USING CRON/2
+---------------------------------------------------------------------------
+
+     As I stated previously, I wrote CRON/2 for my own needs and
+     edification.  Because of this, you may find the documentation spartan
+     (and then again, you may not; what I consider "spartan" others consider
+     verbose).  I will, however, explain enough to use the application.
+
+     Please note that this documentation covers all aspects of the CRON/2
+     system (TCP/IP, non-TCP/IP, and at).  If you have a version that does
+     not utilize all of CRON/2's available functionality, simply skip those
+     sections that aren't applicable.
+
+     STARTING CRON/2
+     ----------------------------------------------------------------------
+
+     CRON/2 can be started with a number of command-line switches.  The
+     syntax appears as:
+
+              CRON2N [[-n[s[0/1]]] [-s[0/1]] [-p<port>]] [-l[<logfile>]]
+
+     for the TCP/IP version, or simply
+
+              CRON2 [-l[<logfile>]]
+
+     for the non-TCP/IP version.
+
+
+     Each option is explained below:
+
+         -n          enables networking.  this option will cause CRON/2
+                     to initialize TCP/IP for use with entries in CRON2.DAT
+                     that specify a host name with braces ({}).  Not
+                     specifying this option when CRON2.DAT contains remote
+                     launches, or a missing TCP/IP installation on your
+                     machine, will cause CRON/2 to ignore those entries.
+
+         -s          enables the built-in TCP/IP server.  this server runs
+                     as a separate thread within CRON/2, and is required
+                     to allow remote CRON/2 process to launch applications
+                     locally on your machine.
+
+                     this parameter can be followed by an optional digit
+                     in the range 0 to 1.
+                     
+                     a value of 0 indicates that there will be no security
+                     for launching local processes initiated remotely.  Any
+                     application that a remote CRON/2 process requests will
+                     cause the local CRON/2 to attempt to launch it.
+
+                     a value of 1 activates security on the local process.
+                     launch requests made by remote processes MUST appear
+                     identically in the local process's CRON2.DAT file, or
+                     the launch request will not be serviced.
+
+                     as illustrated, this parameter can be attached to the
+                     "-n" option to enable both client and server portions
+                     of CRON/2 in the same process using separate threads.
+
+         -p          specifies the TCP/IP port to use for initializing
+                     sockets.  this value defaults to port 10000 if not
+                     specified.
+
+         -l          activates activity logging.  this options creates the
+                     file "CRON2.LOG" in the same drive/directory that
+                     CRON/2 was started from.
+
+     DIRECTING CRON/2: THE CRON2.DAT FILE
+     ----------------------------------------------------------------------
+
+     Unlike UNIX, CRON/2 uses a single command file for specifying
+     applications and launch times.  This file is called CRON2.DAT, and
+     MUST reside in the directory where the CRON/2 executable is started
+     from.  A sample CRON2.DAT file is provided in the distribution with
+     sample entries commented out.
+
+     With few execptions, the CRON2.DAT file appears and behaves identically
+     to any UNIX cron files you may have worked with before:
+     
+             o Comments are denoted by a pound sign (#) in column one
+             o Command entries appear one to a line
+             o A virtually-unlimited number of entries may appear
+             o Each entry contains the usual cron fields:
+                     o minute
+                     o hour
+                     o day
+                     o month
+                     o day of the week
+                     o executable file and options
+
+     Beyond these items, the CRON2.DAT file contains some OS/2-specific
+     entries necessary for controlling the types and appearance of
+     applications when they are launched.  Four additional fields appear
+     in each application record:
+
+             o Application type: "VDM", "OS2", or "PM"
+             o Process priority: "FG" for foreground, "BG" for background)
+             o Appearance of application: "WIND" for windowed, "FULL" for
+               full screen
+
+     The fourth field, not highlighted above, is optional, and preceeds
+     the path/executable entry in the CRON2.DAT file.  This field is
+     denoted by braces ({}), and specifies the name of a remote system
+     on which this application should be launched.
+               
+     Addtionally, each appearance token (WIND or FULL) may be followed by
+     a minus sign (-) to indicate that the application should be started
+     as a minimized icon.
+
+     Appearing at the extreme bottom of the CRON2.DAT file is the "at"
+     delimeter, represented by the at sign (@).  It is extremely important
+     that all of your normal CRON/2 entries appear in the CRON2.DAT file
+     before this token.  CRON/2 uses the entries following the @ token in
+     of the CRON2.DAT file to house the at command's entries (see the at
+     command later in this document).
+
+     Be warned that entries in this section come and go without warning.
+     Treat the @ symbol as an electric fence around a off-limits area.  Also,
+     CRON/2 will function with or without the @ token appearing in the file,
+     however the at command will not.  If you remove the @ token, using the
+     at command will produce undefined results (so just leave it there ;-).
+
+     The following are example CRON/2 entries that I use to control my
+     USENET news feed from OS/2:
+
+             0     1   * * * VDM BG WIND  c:\usenet\snews\expire.bat
+|            25,55 0-6 * * * VDM BG WIND  c:\usenet\snews\sendbtch.bat
+             0,30  *   * * * OS2 BG FULL- c:\uucp_os2.cmd
+             0     2   * * * OS2 FG WIND  del c:\os2\locks\*.lck
+
+     For those of you unfamiliar with cron, the first entry launches the
+     MS-DOS batch file "expire.bat" in the "c:\usenet\snews" directory
+     at 1:00 am each day.  It runs in a Virtual DOS Machine session, in the
+     background, in a PM window.
+
+|    The second entry is different in that it runs an MS-DOS batch file at
+|    25 and 55 after each hour between midnight and six (00:00-06:00).
+
+     The third entry operates on an OS/2-specific command file.  This
+     command file is initiated at the top of, and half past, each hour.
+     It is run in an OS/2 text session, in the background, in a full-screen
+     window that is minimized to a Presentation Manager icon as soon as
+     it starts.
+
+     You can specify multiple entries for minute, day, hour, month, and
+     day-of-the-week by separating them with commas.
+
+     You can find additional information about cron by consulting a UNIX
+     manual or man page.
+
+     DEALING WITH NON-FILES
+     ----------------------------------------------------------------------
+
+     When CRON/2 processes CRON2.DAT, it performs a verification of each 
+     executable to make sure that it exists and can be found where you've 
+     indicated it should be (if a drive/path is included with the name).
+
+     However, if CRON/2 cannot verify the program's existence, it will assume
+     that it is not smart enough to determine your intent.  It will assume
+     that the command processor you are using (CMD.EXE, 4OS2-32.EXE, etc.) IS 
+     smart enough and will submit it directly.
+
+     Using this method, it is possible to embed built-in shell commands in 
+     CRON2.DAT instead of having to preface the entry with the name of your 
+     command processor, or creating another command file to perform the 
+     function.
+
+     All non-file entries in CRON2.DAT are set to execute as OS/2
+     applictions.
+
+     DYNAMIC SYNCHRONIZING
+     ----------------------------------------------------------------------
+
+     To avoid having to stop and re-start CRON/2 when changes are made to 
+     CRON2.DAT, CRON/2 will check CRON2.DAT each minute to see if it has 
+     been changed since CRON/2 was started (or since the last time it 
+     processed CRON2.DAT).
+
+     CRON/2 checks the size and date/time stamp of the CRON2.DAT file.  If 
+     the file has changed since CRON/2 started or the last synchronize, 
+     CRON/2 will release it's internal list of processes, and create a new 
+     list with the altered contents of CRON2.DAT.
+
+     DIRECTING ANOTHER CRON/2: REMOTE TIMED LAUCHING
+     ----------------------------------------------------------------------
+
+     In the TCP/IP version (CRON2N.EXE), CRON/2 has the ability to launch
+     applications on other TCP/IP-networked OS/2 systems running another
+     CRON/2 process with its TCP/IP server activated.
+
+     To utilize this feature, you must have acquired and sucessfully 
+     installed IBM's TCP/IP 1.2 (TM) product on each system that you plan 
+     to run the CRON/2 server on.
+
+     You specify this unique cron feature in two ways:  first, you must
+     activate CRON/2's TCP/IP support when it is started by one or a
+     combination of the -n or -s command-line paramaters; second, you
+     can optionally select entries in CRON2.DAT to launch on remote systems
+     by prefixing the executable name with the name of the remote system.
+
+     Here is an example entry:
+
+         11,38,42,59 * * * * PM  FG FULL {bhlocal1}c:\os2\apps\jigsaw.exe
+
+     This entry in CRON2.DAT will launch the OS/2 PM Jigsaw application
+     in a full-screen Presentation Manager window as the foreground
+     application at 11, 38, 42, and 59 minutes after each hour.
+     
+     The difference in this entry is that it doesn't launch on the local
+     machine, but on the remote machine named "bhlocal1".  If you use
+     domain names to specify remote machines, the domain name must reside
+     in your TCPIP\ETC\hosts file.  You may also elect to specify remote
+     hosts in dotted-decimal format to avoid domain name resolving (i.e.,
+     {192.100.100.2} instead of {bhlocal1}).
+
+     Needless to say, the application (and path) you specify for the remote
+     machine should actually exist.
+
+     If security has been activated on the remote machine (i.e., -s1 or
+     -ns1), with the exception of the time/date/dow information, the
+     application entry fields in the local CRON2.DAT file must match
+     EXACTLY with those contained in the remote machine's CRON2.DAT file
+     for the application to be successfully launched remotely.
+
+     The following examples illustrate a local and remote CRON2.DAT entry.
+     Each entry will fail remote execution (note that time/date/dow
+     information is not illustrated because is has no impact):
+
+         PM  FG FULL {bhlocal1}c:\os2\apps\jigsaw.exe
+         PM  BG FULL {bhlocal1}c:\os2\apps\jigsaw.exe
+             --
+
+         PM  FG FULL {bhlocal1}c:\os2\apps\jigsaw.exe
+         PM  FG FULL- {bhlocal1}c:\os2\apps\jigsaw.exe
+                -----
+             
+         PM  FG FULL {bhlocal1}c:\os2\apps\jigsaw.exe
+         PM  FG FULL {bhlocal1}c:\os2\apps\jigsaw
+                                           ----------
+
+     However, the next two entries WILL successfully compare because 
+     options are not taken into consideration (note that the illustrated 
+     options to Jigsaw are bogus):
+    
+         PM  FG FULL {bhlocal1}c:\os2\apps\jigsaw.exe
+         PM  FG FULL {bhlocal1}c:\os2\apps\jigsaw.exe -3 -new
+             
+     Formatting of fields is not important, so spaces and tabs between fields
+     in the CRON2.DAT will not be taken into consideration when security
+     is active.
+
+LOG-ABLE COMMENTS
+---------------------------------------------------------------------------
+     It is sometimes useful to accompany log files with comments.  For this
+     reason, CRON/2 allows "logable" comments to be included in the CRON2.DAT
+     file.
+
+     Normal comments in the CRON2.DAT file are denoted by the pound sign (#)
+     in the first column a CRON2.DAT line.  Logable comments denoted by
+     a pound sign followed by a dollar sign (#$).
+
+     Logable comments must immediately preceed their CRON2.DAT entries.
+     For example,
+
+        #$ Ensure that all local articles are forwarded!
+        25,55 * * * * VDM BG WIND d:\usenet\snews\sendbtch.bat
+
+     would result in a log file entry like
+
+        # Ensure that all local articles are forwarded!
+        Launching sendbtch.bat   8.03.1993 @ 00:55...done!
+
+"AT" YOUR COMMAND
+---------------------------------------------------------------------------
+     CRON/2 now sports a new, single-launch system that duplicates the
+     functionality of the UNIX at command.  The command is, in fact, called
+     "at", and is a completely separate executable.
+
+     Like CRON/2, the at sub-command of CRON/2 duplicates the operation of
+     it's UNIX counterpart as closely as possible.  And, like CRON/2, the
+     CRON/2 at sub-command has both UNIX-specific and OS/2-specific parts.
+
+     The CRON/2 at command has the following input parameters:
+
+       at [-m] [-l] time [date] [[next | +increment] time_designation] job
+
+     With the exception of the "-l" and "job" parameters, CRON/2's at command
+     is identical to UNIX's.  You can simply reference a UNIX man page for
+     the at command for more information.
+
+     The -l option allows you to get a quick look at what "job"s have been
+     queued (keep in mind that if a queued job has launched, it will no
+     longer be in the queue).
+
+     The -m option, while it sends mail to the submitter when a queued job
+     has been processed, does nothing (yet) under CRON/2.
+
+     The remaining extension, "job", represents the parameters that must be
+     provided to CRON/2's at command to complete the queuing of a job.  The
+     items are essentially identical to those that are placed into the
+     CRON2.DAT file (sans the time/date information).
+
+     For instance, here are the CRON/2 entries given previously as examples,
+     represented in both CRON2.DAT and CRON/2 at format:
+
+        25,55 * * * * VDM BG WIND c:\usenet\snews\sendbtch.bat
+
+     would become
+
+        at now + 10 minutes vdm bg wind c:\usenet\snews\sendbtch.bat
+
+     As a further example,
+
+        0,30 * * * * OS2 BG FULL- c:\uucp_os2.cmd
+
+     could be used as
+
+        at 9:30am tomorrow os2 bg full- c:\uucp_os2.cmd
+
+     Another example:
+
+        at 5am tuesday + 2 weeks vdm bg wind c:\usenet\snews\expire.bat
+
+     Other combinations are left as an exercise for the reader =|^).
+
+     COMMUNICATING WITH CRON/2
+     ----------------------------------------------------------------------
+
+     The CRON/2 at sub-command communicates with an operating CRON/2 process
+     via a named piped.  CRON/2 must be operational before you invoke the
+     at command.
+
+     Also, because the at command communicates through a named pipe, it can
+     be run from literally anywhere (it doesn't have be in the same directory
+     as CRON/2).
+
+
+GOTCHAS (non-bugs)
+---------------------------------------------------------------------------
+
+     o CRON/2 will barf if you specify either -ns1 or -s1 and there is
+       no local CRON2.DAT file...
+
+     o Starting CRON/2 with an empty CRON2.DAT file will generate a
+       richly-deserved insult about your questionable parentage...
+
+     o System error messages detected by CRON/2 are displayed as decimal
+       only
+
+     o If you are running any .CMD files from CRON2.DAT, you MUST have
+       COMSPEC set in your OS/2 environment (this is usually automatic)
+
+     o You can't fool OS/2 into running a minimized process as the
+       foreground process...it knows you're only human...
+
+WHAT THE ... ?! (known bugs)
+---------------------------------------------------------------------------
+
+     o Starting applications with the FG token, either locally or remotely,
+       will occasionally generate a 457 (ERROR_SMG_START_IN_BACKGROUND)
+       error...I don't know why yet.  Your process will run, however.
+
+     o CRON/2 was developed using a beta compiler on a beta platform...
+       so there...
+
+BUG REPORTS, QUESTIONS, COMMENTS, ATTA-BOYS...
+---------------------------------------------------------------------------
+
+                  Bob Hood
+     Mailnet    : 1217 S. Independence Street
+                  Lakewood, CO  80232
+
+|    Internet   : rhood@nyx.cs.du.edu         <--- preferred!!
+|                 bbh@csci.csc.com
+
+     AT&Tnet    : (303) 980-8392
+
+HISTORY
+---------------------------------------------------------------------------
+1.0            - Initial release
+
+1.1  05.19.93  - added activity logging
+               - added dynamic synchronizing of the CRON2.DAT file
+
+1.2  05.26.93  - corrected a bug introduced in 1.1 that suspended the update
+                 of the on-screen date/time
+               - corrected a problem with dynamic synchronizing that disabled
+                 the feature after the first process is launched
+               - re-designed logging mechanism to allow access to the log file
+                 with any file viewer/editor while CRON/2 is running
+               - added a mechanism to push log messages onto a FIFO queue when
+                 CRON/2 cannot access the log file
+               - removed the option to specify a different log file as a
+                 result of CRON/2 changing drive/paths
+
+1.3  08.06.93  - Corrected a bug that prevented CMD.EXE from launching
+                 processes correctly.  CRON/2 was developed using 4OS2,
+                 which behaves differently. (Sorry Todd)
+               - Added more fault tolerance for the handling of non-fatal
+                 errors
+               - Altered CRON/2's behaviour with non-existent programs.  
+                 Instead of issuing a warning and ignoring an entry if it 
+                 cannot be physically located during CRON2.DAT processing, 
+                 CRON/2 now marks the entry as a CMD file and submits it 
+                 directly to %COMSPEC%.  This allows built-in shell commands
+                 ("del", "copy", "move", etc.) to be used instead in place of
+                 executable programs.
+               - Added logable comments to the CRON2.DAT file.  Comments
+                 starting with "#$" are saved and associated with the entries
+                 they immediately preceed.  These comments are then posted
+                 to the log file immediately preceeding the processes launch
+                 log. (Jon Hacker)
+               - Split CRON/2 into network and non-network versions.  Starting
+                 with this version, client/server versions of CRON/2 will
+                 contain an `n' after their version numbers (i.e., 1.3n).
+               - Added the external `at' command.
+               - Changed the misspelled word "questionalble" in the doc ;-)
+               - Began including change-bars to illustrate new sections of
+                 the document between versions for veteran CRON/2 users.
+
+1.4  ??.??.??  - Added the range operator (-) to the CRON2.DAT file.
+               - Released the complete source code to the system.
+
+1.41  02.2001  - Source can be compiled with IBM VAC++ 3.0
+               - minor changes to the source has been made
+                 dgraef@altavista.de

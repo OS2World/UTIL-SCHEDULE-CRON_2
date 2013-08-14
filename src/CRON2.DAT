@@ -1,0 +1,23 @@
+# SYNTAX:
+# minute hour day month dow(0=Sun) VDM/OS2/PM FG/BG WIND/FULL[-] [{}]exec [opts]
+
+# (with the exception of the OS/2-specific identifiers, this is a typical
+# UN*X CRON file)
+
+# A "FULL" key on a "PM" process will MAXIMIZE the window
+
+# A minus [-] following either FULL or WIND will start the process minimized
+
+# Since it doesn't make since to run a minimized process (FULL-/WIND-) with
+# a foreground (FG) priority, a FG priority on minimized processes is
+# automatically changed to BG by CRON2.
+
+# see the CRON2.DOC file for detail explanations of the various fields:
+# 0           * * * * VDM FG FULL  c:\uucp_os2.bat
+# 11,38,42,59 * * * * PM  FG FULL  {bhlocal1}c:\os2\apps\jigsaw.exe
+# 0           1 * * * VDM BG WIND  c:\usenet\snews\expire.bat
+# 25,55       * * * * VDM BG WIND  c:\usenet\snews\sendbtch.bat
+# 0,30        * * * * OS2 BG FULL- c:\uucp_os2.cmd
+* 14 11 2 *   PM BG WIND c:\os2\e.exe
+
+@

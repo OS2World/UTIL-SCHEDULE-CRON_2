@@ -1,0 +1,23 @@
+       OS/2 Upload Information Template for ftp-os2.cdrom.com
+
+Archive Name: cron214.zip
+Program Description: CRON/2 v1.4  A UNIX-like cron with networking extensions
+Operating System: OS/2 2.x
+Program Source: Author
+
+This version replaces cron213.zip.  It adds a range operator to the CRON2.DAT
+file.  Minutes/hours/days/months/dow can now span a range, using "15-18"
+instead of "15,16,17,18".
+This release also includes the full source code to the system, to both CRON/2
+and the AT command, in IBM C/Set++ format.  As a result, this is the last
+release of this system from the author.
+
+CRON/2 extends the traditional cron behaviour by adding client/server
+extensions via TCP/IP.  Each CRON/2 process can act as client, server,
+or both to enable remote launching of applications on networked OS/2
+systems.
+
+Your name: Bob Hood
+Your email address: rhood@nyx.cs.du.edu or bbh@csci.csc.com
+
+Proposed directory for placement: 2_x/unix/unixutil
